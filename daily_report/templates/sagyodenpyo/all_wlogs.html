@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}全体の作業日報一覧 - Ushiku{% endblock %}
+
+{% block content %}
+<style>@media screen and (max-width:450px){ table{font-size: small;} }</style>
+<div class="subhead">
+    <div>
+    全体の作業日報一覧　　
+    <a href="{% url 'daily_report:log_work' %}">新規作成</a>
+    <a href="{% url 'daily_report:work_logs' %}">個人の日報</a>
+    <a href="{% url 'daily_report:totals' %}">集計</a>
+    <label id="export_csv">CSV出力</label>
+
+    </div>
+    <div>
+        日報件数：{% if wls_count == 0 %}<b>{{ wl_count }}件</b>{% elif wls_count > 0 %}<b>{{ wls_count }}件</b>{% endif %}
+    </div>
+</div>
+<div class="subhead_sp">
+    <div>
+        <div  style="width:800px;">
+        全体の作業日報一覧　　
+        <a href="{% url 'daily_report:log_work' %}">新規作成</a>　
+        <a href="{% url 'daily_report:work_logs' %}">個人の日報</a>　
+        <a href="{% url 'daily_report:totals' %}">集計</a>　
+        
+            
+
+            日報件数：{% if wls_count == 0 %}<b>{{ wl_count }}件</b>{% elif wls_count > 0 %}<b>{{ wls_count }}件</b>{% endif %}
+        </div></div>
+</div>
+    <div class="ov-ray" id="scr2"></div>
+    <div class="mdl_cont" id="mdl2">
+        <div class="header"><div style="padding:0;">CSV出力</div> <div style="padding:0;"><label class="close" id="close_ecsv" align="right">×</label></div></div>
+        <div align="left">
+        <h3 align="center">CSV出力設定</h3>
+        <p>注）* のついている項目は<u>必ず</u>入力してください。</p>
+        <p><a href="">ヘルプ</a></p>
+        <p>
+            <b>入力例</b>
+            <ol>
+                <li>開始日のみ入力：開始日以降の全ての日報を出力</li>
+                <li>開始日・終了日入力：指定した開始日から終了日までの日報を出力</li>
+            </ol>
+        </p>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div align="right"><button type="submit">出力</button></div>
+        </form>
+        </div>
+    </div>
+
+<br><br>
+        <form method="get" action="{% url 'daily_report:all-logs' %}">
+            <label for="selected_date">日付で絞る</label>
+            <input type="date" id="selected_date" name="selected_date" value="{{ selected_date|default_if_none:'' }}">
+            <button type="submit">表示</button>　<a href="{% url 'daily_report:all-logs' %}">日付をクリア</a>
+        </form>
+        <p style="font-size: small;">注) 作業日報のない日は全体の日報がそのまま表示されます。</p>
+<div style="width:100%; overflow: auto;">
+    <div style="width:900px;">
+{% if filtered_log %}
+<br><br><h2 style="padding:0; margin:0; ">{{ selected_date|date:"m月 d日" }}の作業日報</h2>
+<table border class="dbviewa" >
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>日付</th>
+        <th>氏名</th>
+        <th>工番</th>
+        <th>件名</th>
+        <th>作業内容</th>
+        <th>作業時間</th>
+        <th>編集</th>
+    </tr>
+    </thead>
+    <tbody>
+{% for log in filtered_log %}
+        <tr>
+            <td class="dbviewid">{{ log.id }}</td>
+            <td>{{ log.date }}</td>
+            <td>{{ log.employee.name }}</td>
+            <td>{{ log.work_number }}</td>
+            <td>{{ log.subject }}</td>
+            <td>{{ log.get_work_code_display }}</td>
+            <td>{{ log.work_hours }}時間{{ log.work_minute }}分</td>
+            <td><a href="{% url 'daily_report:manage_wlog' log.pk %}">&#9998;</a></td>
+        </tr>
+{% empty %}
+        <tr><td colspan="6">作業日報はありません。</td></tr>
+{% endfor %}
+    </tbody><br>
+</table>
+{% else %}
+<table border class="dbviewa" >
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>日付</th>
+        <th>氏名</th>
+        <th>工番</th>
+        <th>件名</th>
+        <th>作業内容</th>
+        <th>作業時間</th>
+        <th>編集</th>
+    </tr>
+    </thead>
+    <tbody>
+{% for logs in work_log %}
+        <tr>
+            <td class="dbviewid">{{ logs.id }}</td>
+            <td>{{ logs.date }}</td>
+            <td>{{ logs.employee.name }}</td>
+            <td>{{ logs.work_number }}</td>
+            <td>{{ logs.subject }}</td>
+            <td>{{ logs.get_work_code_display }}</td>
+            <td>{{ logs.work_hours }}時間{{ logs.work_minute }}分</td>
+            <td><a href="{% url 'daily_report:manage_wlog' logs.pk %}">&#9998;</a></td>
+        </tr>
+{% empty %}
+        <tr><td colspan="6">作業日報はありません。</td></tr>
+{% endfor %}
+    </tbody><br>
+</table>
+{% endif %}
+</div></div><br><br>
+<script>
+        document.getElementById('export_csv').addEventListener('click', function() {
+            document.getElementById('scr2').style.display = 'block';
+            document.getElementById('mdl2').style.display = 'block';
+        });
+        document.getElementById('close_ecsv').addEventListener('click', function(){
+            document.getElementById('scr2').style.display = 'none';
+            document.getElementById('mdl2').style.display = 'none';
+        });
+</script>
+<script src="{% static 'scripts/saving_datas.js' %}"></script>
+{% endblock %}

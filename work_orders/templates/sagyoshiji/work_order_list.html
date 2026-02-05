@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}作業注文票 - Ushiku{% endblock %}
+
+{% block content %}
+
+<div class="subhead">
+    <div>
+    作業注文票一覧　　
+    {% if request.user.is_superuser %}
+    <a href="{% url 'work_orders:register_work_order' %}">新規作成</a>
+    {% if work_orders %}
+    <a href="{% url 'work_orders:export_work_orders_csv' %}" >作業注文票CSV出力</a>
+    <a href="{% url 'work_orders:export_workorderprogress_csv' %}" >作業進捗CSV出力</a>
+    {% endif %}{% endif %}
+    </div>
+    <div>
+        作業注文票件数：{{ wo_count }}件
+    </div>
+</div>
+<div class="subhead_sp">
+    <div>
+        <div style="width:700px;">
+    作業注文票一覧　　
+    {% if request.user.is_superuser %}
+    <a href="{% url 'work_orders:register_work_order' %}">新規作成</a>　
+    {% if work_orders %}
+    <a href="{% url 'work_orders:export_work_orders_csv' %}" >作業注文票CSV出力</a>　
+    <a href="{% url 'work_orders:export_workorderprogress_csv' %}" >作業進捗CSV出力</a>　
+    {% endif %}{% endif %}
+    　<b>作業注文票件数：{{ wo_count }}件</b>
+    </div></div>
+</div>
+<br><br><br>
+
+    
+    {% if not work_orders %}
+        <h1>データがありません</h1>
+        <p>「新規作成」から作成</p>
+    {% else %}
+    {% for order in work_orders %}
+    <a href="{% url 'work_orders:work_order_detail' order.pk %}" style="text-decoration: none; color:black;" title="注文の詳細を確認する">
+    <div class="wo_list">
+        
+            <p align="left">注文番号：{{ order.work_order_number }}　/　発行日：{{ order.release_date }}</p>
+            <h2><u>工番-枝番：{{ order.work_number }}ー{{ order.work_trenum }} / 件名：{{ order.subject }}</u></h2>
+            <p>計画数：{{ order.planed_value }}、作業開始日：{{ order.start_date }}、作業終了日{{ order.end_date }}</p>
+            <p>作業範囲：{{ order.work_range }} ｜ {{ order.work_type }}</p>
+            <p>作業進捗率：{{ order.progress_rate }}%</p>
+            
+            <hr color="gray" size="1" width="50%">
+            <a href="{% url 'work_orders:edit_work_order' order.pk %}" class="up_del">修正・作業進捗登録</a>　
+            <a href="{% url 'work_orders:delete_work_order' order.pk %}" class="up_del">削除</a>
+            
+            <br>
+    </div></a>
+    <a href="{% url 'work_orders:work_order_detail' order.pk %}" style="text-decoration: none; color:black;" title="注文の詳細を確認する">
+    <div class="wo_list_sp">
+        <p align="left" style="font-size: small; padding:1px;">注文番号：{{ order.work_order_number }} / 発行日：{{ order.release_date }}</p>
+        <h3><u>工番：{{ order.work_number }} </h3><h1> 件名：{{ order.subject }}</u></h1>
+        <h3>計画数：{{ order.planed_value }}</h3>
+        <p style="font-size: large;">作業期間：{{ order.start_date }} ~ {{ order.end_date }}</p>
+        <p>作業範囲：{{ order.work_range }} <br> {{ order.work_type }}</p>
+        <h4>作業進捗率：{{ order.progress_rate }}%</h4>
+        
+        <hr color="gray" size="1" width="50%"><br>
+        <a href="{% url 'work_orders:edit_work_order' order.pk %}" class="up_del">修正・作業進捗登録</a>　
+        <a href="{% url 'work_orders:delete_work_order' order.pk %}" class="up_del">削除</a>
+        
+        <br>
+    </div></a><br><br>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}

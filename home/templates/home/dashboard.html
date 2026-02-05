@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}HOME - Ushiku{% endblock %}
+
+{% block content %}
+    <style>
+        .gta{
+            padding:5px 10px;
+            background: rgb(214, 214, 214);
+            border-radius: 5px;
+            width:700px;
+        } .gta label{font-size: x-large; font-weight: bold;} .gta img{width:600px; height:350px;}
+
+
+    </style>
+<div align="center">
+{% if not work_orders %}
+<div style="width:70%; padding:5px 10px; background:rgb(188, 216, 255); padding-bottom:20px; border-radius: 10px;">
+    <h2>まだ作業注文票が存在しません。　作成してください。</h2>
+    <a href="{% url 'work_orders:register_work_order' %}">ここから作成</a>
+</div>
+{% else %}
+    <div class="s_container">
+        {% for order in work_orders %}
+        <a href="{% url 'work_orders:work_order_detail' order.pk %}" class="card_anker">
+            <div class="card act_card">
+                <p align="left" style="font-size: small;">作業注文表番号：{{ order.work_order_number }}　工番：{{ order.work_number }} </p>
+                <h3>件名：{{ order.subject }}</h3>
+                <p style="font-size: small;">作業開始日：{{ order.start_date }}　作業終了日：{{ order.end_date }}</p>
+                <p><strong>{{ order.work_type }}</strong></p>
+                <h4 style="margin: 0;">作業進捗率</h4>
+                <p style="margin:0;">進捗率： {{ order.progress_rate }} %</p>
+                <div class="progress-container" align="left">
+                    
+                    
+                        <div class="progress-bar" style="width:{{ order.progress_rate }}%;" ></div>
+                    
+                </div>
+                    <style>
+                        .progress-container {
+                            position: relative;
+                            left:0;
+                            width: 80%;
+                            background-color: #f1f1f1;
+                        }
+
+                        .progress-bar {
+                            position: relative;
+                            left:0;
+                            width: 0%;
+                            height: 30px;
+                            text-align: center;
+                            line-height: 30px;
+                            background:rgb(20, 237, 0);
+                            color: white;
+                        }
+                    </style>
+                 
+            </div></a>
+        {% endfor %}
+    </div><br>
+    {% if work_order_count > 1 %}
+    <button onclick="prevCard()">＜前へ</button>　<span id="spage">1</span>　<button onclick="nextCard()">次へ＞</button>
+    {% endif %}
+{% endif %}
+<br>
+<h2>Work Pad</h2>
+<div class="wpad_b"><div class="wpad_ba">
+
+    <a href="{% url 'daily_report:log_work' %}" style="color:black;">
+    <div class="wpad">
+    <div class="wpad_ma"></div><br>
+    <div align=center><img src="{% static 'svgs/add.svg' %}" class="wpad_m" alt=""></div><br><br>
+    <div align=center><p class="wpad_fo">作業日報作成</p></div><br>
+    </div></a>
+    {% if request.user.is_superuser %}
+    <a href="{% url 'work_orders:register_work_order' %}" style="color:black;">
+        <div class="wpad">
+        <div class="wpad_ma"></div><br>
+        <div align=center><img src="{% static 'svgs/add.svg' %}" class="wpad_m" alt="指示票作成"></div><br><br>
+        <div align=center><p class="wpad_fo">作業注文票作成</p></div><br>
+    </div></a>
+    {% elif request.user.is_superuser or request.user.is_staff %}
+    <a href="{% url 'daily_report:totals' %}" style="color:black;">
+        <div class="wpad">
+        <div class="wpad_ma"></div><br>
+        <div align=center><img src="{% static 'svgs/add.svg' %}" class="wpad_m" alt=""></div><br><br>
+        <div align=center><p class="wpad_fo">作業日報集計</p></div><br>
+    </div></a>
+    {% endif %}
+        
+
+</div></div>
+
+</div></div>
+<script>
+    let currentIndex = 0;
+    const cards = document.querySelectorAll('.card');
+    const total_cards = cards.length;
+    const showpage = document.getElementById('spage');
+
+    function showCard(index){
+        cards.forEach((card, i) => {
+            card.classList.remove('act_card');
+            card.style.left = (i === index) ? '0' : '100%';
+            card.style.pointerEvents = (i === index)? 'auto' : 'none';
+        });
+        cards[index].classList.add('act_card');
+        showpage.innerHTML = (index + 1) + '/' + total_cards;
+    }
+
+    function nextCard(){
+        currentIndex = (currentIndex + 1) % total_cards;
+        showCard(currentIndex);
+    }
+
+    function prevCard(){
+        currentIndex = (currentIndex - 1 + total_cards) % total_cards;
+        showCard(currentIndex);
+    }
+    setInterval(nextCard, 10000);
+    
+</script>
+<br>
+{% endblock %}

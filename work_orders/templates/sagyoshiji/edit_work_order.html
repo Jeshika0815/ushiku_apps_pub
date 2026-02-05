@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}作業注文票修正 - Ushiku{% endblock %}
+
+{% block content %}
+<div class="subhead">
+    <div>
+    作業注文票修正　　No.{{ work_order.work_order_number }}
+    <label class="ank" id="progress">作業進捗登録</label>
+    </div>
+</div>
+<div class="subhead_sp">
+    <div>
+    作業注文票修正　　No.{{ work_order.work_order_number }}
+    </div>
+</div>
+<br><br>
+<style>@media screen and (max-width:450px){label{font-size: small;}}</style>
+<div class="form_formera">
+    <form method="post" >
+        <div align="center"><h2 class="titles">作業注文票情報</h2></div>  
+        {% csrf_token %}      
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+        <!-- form.as_p -->
+        <div  class="form_former">
+            <div style="padding:10px; text-align: right;" >
+                {{ form.work_order_number.label_tag }}
+                {{ form.work_order_number }}<br>
+    
+                {{ form.work_number.label_tag }}
+                {{ form.work_number }}<br>
+    
+                {{ form.subject.label_tag }}
+                {{ form.subject }}<br>
+    
+                {{ form.manager.label_tag }}
+                {{ form.manager }}<br>
+    
+                {{ form.work_group.label_tag }}
+                {{ form.work_group }}<br>
+    
+                {{ form.work_hours.label_tag }}
+                {{ form.work_hours }}
+            </div>
+            <div style="padding:10px; text-align: right;" >
+                {{ form.next_process.label_tag }}
+                {{ form.next_process }}<br>
+                
+                {{ form.start_date.label_tag }}
+                {{ form.start_date }}<br>
+                
+                {{ form.end_date.label_tag }}
+                {{ form.end_date }}<br>
+                
+                {{ form.planed_value.label_tag }}
+                {{ form.planed_value }}<br><br>
+                
+                {{ form.syounin_check.label_tag }}
+                {{ form.syounin_check }}<br>
+                
+                {{ form.publish_check.label_tag }}
+                {{ form.publish_check }}<br>
+                
+                {{ form.workset_check.label_tag }}
+                {{ form.workset_check }}<br>
+                
+                {{ form.buy_check.label_tag }}
+                {{ form.buy_check }}<br>
+                
+                {{ form.recive_check.label_tag }}
+                {{ form.recive_check }}
+            </div>
+            <div style="padding:10px; text-align: left;">
+                <div class="work_rangesf">
+                <b>作業範囲</b><br>
+                    {{ form.work_range }}
+                    
+                    {% for radio in form.work_type %}
+                    <label >
+                    {{ radio.tag }} {{ radio.choice_label }}
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+    
+    </div>
+        <div align="center"><h2 class="titles">作業進捗データ</h2></div>
+        <div style="width:100%; overflow: auto;">
+            <div align="center">
+        {{ formset.management_form }}
+        <table>
+            <thead>
+                <tr>
+                    <th>作業日</th>
+                    <th>当日実績</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for form in formset %}
+                <tr>
+                    {% for hidden in form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+                    <td>{{ form.work_date }}</td>
+                    <td>{{ form.daily_result }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div></div><br><br>
+        <div class="f_el"><div align="right">
+            <button class="sub_bt" onclick="history.back(); return false;">戻る</button>　
+            <button type="submit" class="sub_bt" style="padding:10px 20px;">更新</button>
+        </div></div>    </form></div><br>
+
+        <script>
+            //ボタンを押したら指定箇所にスクロール
+            const collectprogress = document.querySelector('#progress');
+
+            collectprogress.addEventListener('click', function(){
+                window.scrollBy({
+                    top:600,
+                    behavior:'smooth'
+                })
+            });
+        </script><style>main{width:100%;}</style>
+        <script>
+            // フォーム内でEnterキーを押したときのデフォルト動作を無効化
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        // Enterキーが押された場合、デフォルトの送信動作を防ぐ
+                        event.preventDefault();
+                    }
+                });
+            });
+        </script>
+{% endblock %}

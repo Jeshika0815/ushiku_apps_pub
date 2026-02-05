@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}作業注文票詳細　No.{{ work_order.work_order_number }} - Ushiku{% endblock %}
+
+{% block content %}
+<style>
+    @media screen and (max-width: 450px){
+        .sp_font{
+            font-size: small;
+        }
+        .progress-c{
+            width:100%;
+            overflow: auto;
+        }
+        table .tda{
+            font-size: x-small;
+        }
+        table th .content_title{
+            background:rgb(152, 152, 152);
+        }
+    }
+</style>
+<main class="printnot">
+    
+    <div class="subhead">
+        <div>
+        作業注文票詳細　No.{{ work_order.work_order_number }}　
+        
+        
+        <a href="{% url 'work_orders:edit_work_order' work_order.pk %}">修正・作業進捗登録</a>
+        <a href="{% url 'work_orders:delete_work_order' work_order.pk %}">削除</a>
+        
+        </div>
+    </div>
+    <div class="subhead_sp">
+        <div>
+            <div style="width:390px;">
+        作業注文票詳細　No.{{ work_order.work_order_number }}　
+        
+        <a href="{% url 'work_orders:edit_work_order' work_order.pk %}">修正・作業進捗登録</a>　
+        
+        <a href="{% url 'work_orders:delete_work_order' work_order.pk %}">削除</a>
+        
+        </div></div>
+    </div><br><br>
+ 
+    <div class="printnot fullsc1" >
+        <span id="timespace"></span>
+    </div><br><br>
+    <div class="sp_font">
+    <div class="progress-c">
+    <table style="margin: 0 auto;"border="1">
+        <thead>
+            <tr>
+                <th>承認</th>
+                <th>作成</th>
+                <th>工数設定</th>
+                <th>購買確認</th>
+                <th>受領確認</th>
+            </tr>
+        </thead>
+        <tbody>
+            <td style="width:150px; height:50px; text-align: center;">{{ work_order.syounin_check }}</td>
+            <td style="width:150px; height:50px; text-align: center;">{{ work_order.publish_check }}</td>
+            <td style="width:150px; height:50px; text-align: center;">{{ work_order.workset_check }}</td>
+            <td style="width:150px; height:50px; text-align: center;">{{ work_order.buy_check }}</td>
+            <td style="width:150px; height:50px; text-align: center;">{{ work_order.recive_check }}</td>
+        </tbody>
+    </table></div>
+    <br>
+    <div align="center">
+        <h1 align="center" style="text-decoration: underline;">件名　{{ work_order.subject }}</h1>
+        <h2 style="text-decoration: underline;">工番　{{ work_order.work_number }}</h2>
+        <h3 style="text-decoration: underline;">製作グループ　{{ work_order.work_group }}</h3>
+    </div>
+    <br>
+    <div style="display: flex; justify-content: center;">
+        <div style="margin:0; padding:10px;">
+    <table border>
+        <tr><td class="tda content_title"><b>製造管理担当者</b></td><td>{{ work_order.manager }}</td></tr>
+        <tr><td class="tda content_title"><b>作業工数時間</b></td><td>{{ work_order.work_hours }}</td></tr>
+        <tr><td class="tda content_title"><b>次工程</b></td><td>{{ work_order.next_process }}</td></tr>
+        <tr><td class="tda content_title"><b>作業開始日</b></td><td>{{ work_order.start_date }}</td></tr>
+        <tr><td class="tda content_title"><b>作業終了日</b></td><td>{{ work_order.end_date }}</td></tr>
+    </table>
+        </div>
+        <div style="margin:0; padding: 10px;">
+            <div style="padding:5px 10px; width:auto; border:1px dashed rgb(74, 74, 74); border-radius:10px;">
+                <p align="left" style="margin:0; font-weight: bold;">作業範囲</p><br>
+                {{ work_order.work_range }}
+                <br>
+                <h2 align="left">{{ work_order.work_type }}</h2>
+            </div>
+            <h3 align="left">計画本数：{{ work_order.planed_value }} / 作業進捗率：{{ work_order.progress_rate }}%</h3>
+        </div>
+    </div>
+    
+    <br>
+    <div class="progress-c">
+    <table style="margin: 0 auto; white-space: nowrap;  overflow-x: auto;"cellspacing="0" cellpadding="5"border="1">
+            <tr>
+                <th class="content_title">作業日</th>
+                {% for progress in work_orders %}
+                    <td>{{ progress.work_date }}</td>
+                    {% empty %}
+                        <td>進捗データがありません。</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th class="content_title">出来高（％）</th>
+                {% for progress in work_orders %}
+                    <td>{{ progress.achievement }}</td>
+                    {% empty %}
+                        <td>進捗データがありません。</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th class="content_title">当日実績</th>
+                {% for progress in work_orders %}
+                    <td>{{ progress.daily_result }}</td>
+                    {% empty %}
+                        <td>進捗データがありません。</td>
+                {% endfor %}
+            </tr>
+    </table></div><br><br><br></div>
+    <div class="printnot fullsc2">
+        <button id="wfinish"  onclick="location.reload();">全画面終了</button>
+    </div>
+
+<div class="f_el"><div align="right">
+    <button class="sub_bt printnot" id="wstart">全画面</button>　
+    <button  onclick="window.print(); return false;" class="printnot sub_bt">印刷</button>　
+    <button onclick="history.back();" class="sub_bt printnot">戻る</button>
+</div></div><br>
+
+</main>
+<div class="print_format" style="zoom:0.9;">
+    <div align="right">
+    <table style="margin: 0 auto;"border="1">
+        <thead>
+            <tr>
+                <th>承認</th>
+                <th>作成</th>
+                <th>工数設定</th>
+                <th>購買確認</th>
+                <th>受領確認</th>
+            </tr>
+        </thead>
+        <tbody>
+            <td>{{ work_order.syounin_check }}</td>
+            <td>{{ work_order.publish_check }}</td>
+            <td>{{ work_order.workset_check }}</td>
+            <td>{{ work_order.buy_check }}</td>
+            <td>{{ work_order.recive_check }}</td>
+        </tbody>
+    </table>
+    </div>
+    <h1 class="print_title">作業注文票 / No.{{ work_order.work_order_number }}</h1>
+    <h3 align="left">発行日：<u>{{ work_order.release_date }}</u></h3>
+
+    <div style="display: flex; justify-content: space-between;">
+        <div style="margin:0;">
+    <table border>
+        <tr><td><b>製造管理担当者</b></td><td>{{ work_order.manager }}</td></tr>
+        <tr><td><b>作業工数時間</b></td><td>{{ work_order.work_hours }}</td></tr>
+        <tr><td><b>次工程</b></td><td>{{ work_order.next_process }}</td></tr>
+        <tr><td><b>作業開始日</b></td><td>{{ work_order.start_date }}</td></tr>
+        <tr><td><b>作業終了日</b></td><td>{{ work_order.end_date }}</td></tr>
+    </table>
+        </div>
+        <div style="margin:0; display:inline-block;">
+            <h1 align="center" style="text-decoration: underline;">件名　{{ work_order.subject }}</h1>
+            <h2 style="text-decoration: underline;">工番　{{ work_order.work_number }}</h2>
+            <h3 style="text-decoration: underline;">製作グループ　{{ work_order.work_group }}</h3>
+        </div>
+        <div style="margin:0;">
+            <div style="padding:5px 10px; width:auto; border:1px dashed rgb(74, 74, 74); border-radius:10px;">
+                <p align="left" style="margin:0; font-weight: bold;">作業範囲</p><br>
+                    {{ work_order.work_range }}
+                <br>
+                <h2 align="left">{{ work_order.work_type }}</h2>
+            </div>
+        </div>
+    </div>
+    <h3 align="left">計画本数：{{ work_order.planed_value }} / 作業進捗率：{{ work_order.progress_rate }}%</h3>
+    <br>
+    <table style="margin: 0 auto; white-space: nowrap;  overflow-x: auto;"cellspacing="0" cellpadding="5"border="1">
+            <tr>
+                <th>作業日</th>
+                {% for progress in work_orders %}
+                    <td>{{ progress.work_date }}</td>
+                    {% empty %}
+                        <td>進捗データがありません。</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>出来高（％）</th>
+                {% for progress in work_orders %}
+                    <td>{{ progress.achievement }}</td>
+                    {% empty %}
+                        <td>進捗データがありません。</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>当日実績</th>
+                {% for progress in work_orders %}
+                    <td>{{ progress.daily_result }}</td>
+                    {% empty %}
+                        <td>進捗データがありません。</td>
+                {% endfor %}
+            </tr>
+    </table>
+</div>    <script src="{% static 'scripts/focus.js' %}"></script>
+
+{% endblock %}

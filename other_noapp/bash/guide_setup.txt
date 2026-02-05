@@ -1,0 +1,34 @@
+setup_uapps guide book
+
+Name: setup_uapps
+Type: Shellscript(.sh)
+Author: Takumi Saito(St at TID)
+Version: 1
+
+Document Table
+1. installing
+2. setup
+3. uninstalling
+4. finish the program
+
+1. installing
+!Warning: If you geted ushiku_apps. This program isn't function.
+        Why -> Checking installing by the program.
+
+
+Installing ushiku_apps from git.(When not filling uppon warning.)
+
+2. setup
+!Warning: If installed ushiku_apps on the your home directory, You can use the function.(Please restart the program.)
+
+If you enter "S" or "s". You can start setup for ushiku_apps.
+<< setup content >>
+1. Crearing that cache
+2. Creating "staticfiles" >> using production version
+
+
+3. uninstalling
+If you enter "rm". You can uninstall ushiku_apps.
+
+4. finish the program
+If you enter "Q" or "q". You are escape this program.

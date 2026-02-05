@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <title>{% block title %}Ushiku Docs{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="shortcut icon" href="{% static 'ico/shirayama_app_mm.png' %}" >
+    <link rel="manifest" href="{% static 'pwa/manifest.json' %}">
+    <script>
+        if('serviceWorker' in navigator){
+            navigator.serviceWorker.register("{% static 'pwa/service-worker.js' %}");
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            let color = '#5dccfa';
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', color);
+        });
+    </script>
+    <script>
+        //スマホ版戻るボタンの表示制御
+        const back_button = document.getElementById('spbb');
+        if(window.history.length > 1){
+            back_button.style.display = 'block';
+        }else{
+            back_button.style.display = 'none';
+        }
+    </script>
+</head>
+<body>
+    <header class="printnot">
+        <div class="hsu printnot hsel">
+
+        <a href="/" class="hm"><b style="font-size: large;">Ushiku</b></a>
+        <a href="{% url 'work_orders:work_order_list' %}"class="hm">作業注文票</a>
+        <a href="{% url 'daily_report:work_logs' %}" class="hm">作業日報</a>     
+        </div>
+        
+        <div class="hsu printnot hsel">
+
+            <a href="{% url 'docs:app_docs' %}" class="hm"><img src="{% static 'svgs/question.svg' %}" class="h_icon" alt="ヘルプ"></a>
+
+        {% if user.is_authenticated %}
+        <a href="{% url 'home:user_profile' %}" style="text-decoration: none;"><span class="userbox"><img src="{% static 'svgs/user.svg' %}" class="h_icon"> {{ user.id|stringformat:"03d" }} : {{ user.first_name }} {{ user.last_name }} </span></a>　
+        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" onclick="return confirm('ログアウトしてもよろしいですか？');">ログアウト</button>
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}" class="hm">ログイン</a>
+        <script>
+            location.href = "{% url 'login' %}";
+        </script>
+    {% endif %}
+    {% if request.user.is_superuser %}
+    <a href="{% url 'admin:index' %}" class="hm" onclick="return alert('管理画面に移動します。');">アカウント管理</a>　
+    {% endif %}
+    </div>
+    <div class="hsu printnot hsonl">
+        <a href="#" class="hm" onclick="history.back(); return false;" id="spbb">＜</a> 
+        <b style="font-size: x-small;">Ushiku</b>
+    </div>
+    <div class="hsu printnot hsonl">
+        {% if request.user.is_superuser %}
+        <a href="{% url 'admin:index' %}" class="hm" onclick="return alert('管理画面に移動します。');">アカウント管理</a>　
+        {% endif %}         
+        
+        <a href="{% url 'docs:app_docs' %}" class="hm"><img src="{% static 'svgs/question.svg' %}" class="h_icon" alt="ヘルプ"></a>
+    </div>
+    </header>
+    <br><br><br>
+    <main>
+        <div align="center">
+        <h1 id="-" align="center">Ushiku</h1>
+        <h3 id="-">ドキュメントページ</h3>
+        <div align="center" class="content">
+        {% block content %}
+        {% endblock %}
+        </div>
+        </div>
+    </main>
+    <div class="menus"><div align="center">
+        <a href="/" class="hm"><img src="{% static 'svgs/home.svg' %}" class="h_icon" alt="HOME"></a>
+        <a href="{% url 'work_orders:work_order_list' %}"class="hm">作業注文票</a>
+        <a href="{% url 'daily_report:work_logs' %}" class="hm">作業日報</a>  
+        <a href="{% url 'home:user_profile' %}" style="text-decoration: none;"><span class="userbox"><img src="{% static 'svgs/user.svg' %}" class="h_icon" style="border: 1px solid dimgray; border-radius: 5px; padding:3px 5px;"></span></a>　
+
+    </div></div>
+    <noscript>
+        <h1 align="center">Javascriptの設定を確認してください。</h1>
+        <p>JavaScriptが無効なため本サイトにアクセスできません。</p>
+        <p>JavaScriptを有効にしてページを更新してください。</p>
+    </noscript>
+</body>
+</html>

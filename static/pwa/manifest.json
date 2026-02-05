@@ -1,0 +1,20 @@
+{
+  "name": "Ushiku app",
+  "short_name": "Ushiku",
+  "start_url": "/",
+  "display": "minimal-ui",
+  "background_color": "#ebf2f3",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/static/ico/aaa.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/ico/bbb.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

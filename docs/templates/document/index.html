@@ -1,0 +1,14 @@
+{% extends 'docs_base.html' %}
+
+{% block title %}ヘルプセンター  - HOME{% endblock %}
+
+{% block content %}
+<p><strong>プロジェクト名： {{ project_name }}</strong></p>
+<p><strong>Ver : {{ project_version }}</strong></p>
+<p>開発者(敬称略)：齊藤 巧海 - <a href="https://www.tid.ac.jp/" target="_blank">東京情報デザイン専門職大学</a></p>
+
+<a href="{% url 'docs:user_guide' %}">ユーザガイドへ移動</a>
+<br><br>
+
+
+{% endblock %}

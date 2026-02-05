@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}作業注文票削除 - Ushiku{% endblock %}
+
+{% block content %}
+<div class="subhead"><div>作業注文票削除　　</div></div>
+<div class="subhead_sp"><div>作業注文票削除　　</div></div>
+<br><br>
+    <p>以下の作業注文票を削除してもよろしいですか？</p>
+
+    <h3><u>作業注文表番号：{{ work_order.work_order_number }}</u></h3>
+    <h2><u>工番：{{ work_order.work_number }}</u></h2>
+    <h1><u>件名：{{ work_order.subject }}</u></h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <br><br>
+        <style>@media screen and (max-width:450px){.f_el{position: fixed; bottom:5%;}}</style>
+        <div class="f_el"><div align="right">
+            <a href="#" onclick="history.back();" >キャンセル</a>　
+            <button type="submit" class="sub_bt" style="padding:10px 20px;">削除する</button>
+        </div></div>
+    </form><br>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ user.first_name }} {{ user.last_name }} - Ushiku{% endblock %}
+
+{% block content %}
+<h2 align="left" style="padding:3px 10px;"><img src="{% static 'svgs/user.svg' %}" style="width:20px; height:20px; border:1px solid dimgray; padding:5px 10px; border-radius: 5px;"> <span >{{ user.first_name }} {{ user.last_name }} </span>　<span style="color:gray;">{{ user.username }}</span></h2>
+<p align="left" style="padding-left:1%;"><a href="mailto:{{ user.email }}" style=" color:gray;">{{ user.email }}</a></p>
+<div align="left" style="padding:5px 10px;">
+<form action="{% url 'logout' %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" onclick="return confirm('ログアウトしてもよろしいですか？');">ログアウト</button>
+</form>
+{% if request.user.is_superuser %}
+<button class="hm" onclick="location.href = '{% url 'admin:index' %}'; return alert('管理画面に移動します。');">アカウント管理</button>
+{% endif %}
+</div>
+
+<hr style="border:1px solid silver; width:70%;">
+<h3>ユーザーの詳細情報</h3>
+<div style="width:300px; text-align: left; border-radius: 5px; background:#68c5ff; padding:5px 10px;">
+<p>社員ID：{{ user.username }}</p>
+<p>データベースID：{{ user.id|stringformat:"03d" }}</p>
+<p>社員氏名：{{ user.first_name }} {{ user.last_name }}</p>
+<p>
+    部類：
+    {% if user.is_superuser %}
+    <span style="border:2px solid gold; border-radius: 5px;">管理者</span>
+    {% else %}
+    <span style="border:2px solid rgb(202, 202, 202); border-radius: 5px;">社員・パート</span>
+    {% endif %}
+</p>
+<p>メールアドレス：<a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+<p>登録日：{{ user.date_joined|date:"Y年m月d日" }}</p>
+<p>最終ログイン：{{ user.last_login|date:"Y年m月d日 H:i:s" }}</p>
+</div>
+
+<h3>作業日報</h3>
+<a href="{% url 'daily_report:work_logs' %}">個人の作業日報を確認する</a>
+ <br>
+{% if request.user.is_superuser %}
+<h3>ユーザ一覧</h3>
+<a href="{% url 'home:export_user_data_csv' %}">ユーザ一覧をCSVで出力</a>
+{% endif %}
+<br><br>
+{% endblock %}

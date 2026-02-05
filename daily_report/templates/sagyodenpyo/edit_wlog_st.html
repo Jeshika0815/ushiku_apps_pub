@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}作業日報修正＜管理者・一般社員＞ - Ushiku{% endblock %}
+
+{% block content %}
+<div class="subhead">
+    <div>
+    作業日報修正　　{% if request.user.is_staff %}<span style="color:silver;">管理者・集計者</span>{% endif %}
+    </div>
+</div>
+<br><br>
+<form method="post">
+    {% csrf_token %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+    {{ form.as_p }}
+    <br><br>
+        <div class="f_el"><div align="right">
+            <a href="{% url 'daily_report:delete_work_logs' work_log.id %}" class="sub_bt" style="font-size: small;">削除</a>　
+            <button onclick="history.back(); return false;" class="sub_bt">戻る</button>　
+            <button type="submit" class="sub_bt" style="padding:10px 20px;">更新</button>
+        </div></div>
+</form>
+<script>
+    // フォーム内でEnterキーを押したときのデフォルト動作を無効化
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                // Enterキーが押された場合、デフォルトの送信動作を防ぐ
+                event.preventDefault();
+            }
+        });
+    });
+</script>
+{% endblock %}

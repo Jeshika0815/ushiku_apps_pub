@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}作業日報集計 - Ushiku{% endblock %}
+
+{% block content %}
+<style>
+    .count_bs{display:none;}
+    @media screen and (max-width: 450px){
+        .count_bs{display:block;}
+        label{font-size: small;}
+    }
+</style>
+<div class="subhead">
+    <div>
+    作業日報集計　　
+    <a href="{% url 'daily_report:log_work' %}">新規作成</a>
+    <a href="{% url daily_report:work_logs' %}">個人の日報</a>
+    <a href="{% url 'daily_report:all-logs' %}">全体の日報</a>
+    
+    
+    </div>
+    <div>
+        存在する件数：<b>{{ count_logss }}件</b>
+    </div>
+</div>
+<div class="subhead_sp">
+    <div><div style="width: 800px;">
+    作業日報集計　　
+    <a href="{% url 'daily_report:log_work' %}">新規作成</a>　
+    <a href="{% url 'daily_report:work_logs' %}">個人の日報</a>　
+    <a href="{% url 'daily_report:all-logs' %}">全体の日報</a>　
+    存在する件数：<b>{{ count_logss }}件</b>
+    </div></div>
+</div>
+<br><br><br>
+<form method="get">
+    <label for="date">日付を選択:</label>
+    <input type="date" name="date" id="date" value="{{ selected_date|date:'Y-m-d' }}">
+    <button type="submit">集計</button>
+</form>
+<br>
+<div class="alert alert-info mt-3 spmin_h1">
+{{ selected_date|date:'Y年m月d日' }}の総作業時間: {{ total_hours }} 時間 {{ total_minute }}分
+</div>
+<div class="count_bs"><h4>存在する件数：<b>{{ count_logss }}件</b></h4></div>
+<br>
+{% if count_logss > 0 %}
+{% for kouban, data in order_summary.items %}
+    <div class="wlog_c">
+    <h2>工番: {{ kouban }}（合計: {{ data.total_hours }} 時間 {{ data.total_minute }}分）</h2>
+    <h3>件名： {{ data.subject }}</h3>
+        <table border style="margin:10px;">
+            <thead>
+                <th>従業員名</th>
+                <th>作業内容</th>
+                <th>作業時間</th>
+            </thead>
+            <tbody>
+            {% for detail in data.trenum_details %}
+                <tr>
+                    <td>{{ detail.employee.name }}</td>
+                    <td>{{ detail.work_content }}</td>
+                    <td>{{ detail.work_hours }}時間 {{ detail.work_minute }}分</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div><br><br>
+{% endfor %}
+{% else %}
+<div class="wlog_c">
+    <h2 align="center">指定した日の作業日報はありません。</h2>
+</div>
+{% endif %}
+
+{% endblock %}
